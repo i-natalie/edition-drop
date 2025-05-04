@@ -8,7 +8,7 @@ import { ThirdwebGuideFooter } from "../components/ThirdwebGuideFooter";
 
 const queryClient = new QueryClient();
 
-const clientId = "вставь_сюда_свой_Client_ID_из_Thirdweb";
+const clientId = "c68f25e71cf16ad3438aaebef9053881";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
