@@ -4,6 +4,7 @@ import Head from "next/head";
 import { ThirdwebProvider } from "@thirdweb-dev/react";
 import { Sepolia } from "@thirdweb-dev/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Navbar from "../components/Navbar";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             content="Learn How To Use Thirdweb's Edition Drop contract and create a customizable Edition Drop minting page"
           />
         </Head>
+        <Navbar /> {/* Добавили вот сюда */}
         <Component {...pageProps} />
       </ThirdwebProvider>
     </QueryClientProvider>
