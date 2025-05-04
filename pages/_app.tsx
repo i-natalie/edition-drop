@@ -22,7 +22,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             content="Learn How To Use Thirdweb's Edition Drop contract and create a customizable Edition Drop minting page"
           />
         </Head>
-       
+       <Navbar />
         <Component {...pageProps} />
       </ThirdwebProvider>
     </QueryClientProvider>
