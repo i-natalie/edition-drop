@@ -8,12 +8,12 @@ import Navbar from "../components/Navbar";
 
 const queryClient = new QueryClient();
 
-const clientId = undefined;
+const clientId = "c68f25e71cf16ad3438aaebef9053881";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThirdwebProvider activeChain={Sepolia}>
+        <ThirdwebProvider activeChain={Sepolia} clientId={clientId}>
         <Head>
           <title>thirdweb Edition Drop Minting Customizable Page</title>
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
