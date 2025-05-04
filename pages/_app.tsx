@@ -13,7 +13,7 @@ const clientId = "c68f25e71cf16ad3438aaebef9053881";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThirdwebProvider activeChain={Sepolia} clientId={clientId}>
+      <ThirdwebProvider activeChain={Sepolia}>
         <Head>
           <title>thirdweb Edition Drop Minting Customizable Page</title>
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
