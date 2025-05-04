@@ -1,30 +1,31 @@
-import type { AppProps } from "next/app";
-import { ChainId, ThirdwebProvider } from "@thirdweb-dev/react";
 import "../styles/globals.css";
+import type { AppProps } from "next/app";
 import Head from "next/head";
-import ThirdwebGuideFooter from "../components/GitHubLink";
+import { ThirdwebProvider } from "@thirdweb-dev/react";
+import { Sepolia } from "@thirdweb-dev/chains";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ThirdwebGuideFooter } from "../components/ThirdwebGuideFooter";
 
-// This is the chain your dApp will work on.
-const activeChain = "mumbai";
+const queryClient = new QueryClient();
+
+const clientId = "вставь_сюда_свой_Client_ID_из_Thirdweb";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ThirdwebProvider activeChain={activeChain}>
-      <Head>
-        <title>thirdweb Edition Drop Minting Customizable Page</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta
-          name="description"
-          content="Learn How To Use Thirdweb's Edition Drop contract and create a customizable Edition Drop minting page"
-        />
-        <meta
-          name="keywords"
-          content="Thirdweb, thirdweb Edition drop, how to make thirdweb nft drop, how to make nft collection thirdweb"
-        />
-      </Head>
-      <Component {...pageProps} />
-      <ThirdwebGuideFooter />
-    </ThirdwebProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThirdwebProvider activeChain={Sepolia} clientId={clientId}>
+        <Head>
+          <title>thirdweb Edition Drop Minting Customizable Page</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <meta
+            name="description"
+            content="Learn How To Use Thirdweb's Edition Drop contract and create a customizable Edition Drop minting page"
+          />
+        </Head>
+        <Component {...pageProps} />
+        <ThirdwebGuideFooter />
+      </ThirdwebProvider>
+    </QueryClientProvider>
   );
 }
 
