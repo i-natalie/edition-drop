@@ -4,7 +4,6 @@ import Head from "next/head";
 import { ThirdwebProvider } from "@thirdweb-dev/react";
 import { Sepolia } from "@thirdweb-dev/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ThirdwebGuideFooter } from "../components/ThirdwebGuideFooter";
 
 const queryClient = new QueryClient();
 
@@ -23,7 +22,6 @@ function MyApp({ Component, pageProps }: AppProps) {
           />
         </Head>
         <Component {...pageProps} />
-        <ThirdwebGuideFooter />
       </ThirdwebProvider>
     </QueryClientProvider>
   );
