@@ -50,12 +50,20 @@ const Home: NextPage = () => {
               className={styles.input}
             />
 
-            <Web3Button
-              contractAddress={myEditionDropContractAddress}
-              action={(contract) => contract.erc1155.claim("0", quantity0)}
-            >
-              Mint NFT 0
-            </Web3Button>
+            <button
+  onClick={async () => {
+    if (!contract) return;
+    try {
+      await contract.erc1155.claim("0", quantity0);
+      alert("Успешно заминтили NFT 0!");
+    } catch (err) {
+      console.error(err);
+      alert("Ошибка при минтинге");
+    }
+  }}
+>
+  Mint NFT 0
+</button>
 
             <button
               className={styles.shareButton}
@@ -85,12 +93,20 @@ const Home: NextPage = () => {
               className={styles.input}
             />
 
-            <Web3Button
-              contractAddress={myEditionDropContractAddress}
-              action={(contract) => contract.erc1155.claim("1", quantity1)}
-            >
-              Mint NFT 1
-            </Web3Button>
+          <button
+  onClick={async () => {
+    if (!contract) return;
+    try {
+      await contract.erc1155.claim("1", quantity1);
+      alert("Успешно заминтили NFT 1!");
+    } catch (err) {
+      console.error(err);
+      alert("Ошибка при минтинге");
+    }
+  }}
+>
+  Mint NFT 1
+</button>
 
             <button
               className={styles.shareButton}
