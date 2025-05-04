@@ -8,7 +8,7 @@ import Navbar from "../components/Navbar";
 
 const queryClient = new QueryClient();
 
-const clientId = "c68f25e71cf16ad3438aaebef9053881";
+const clientId = undefined;
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
