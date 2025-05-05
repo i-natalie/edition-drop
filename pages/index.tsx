@@ -53,21 +53,25 @@ const Home: NextPage = () => {
               className={styles.input}
             />
 
-            <Web3Button
-              contractAddress={myEditionDropContractAddress}
-              action={async (contract) => {
-                await contract.erc1155.claim("0", quantity0);
-                setMinted0(true);
-              }}
-            >
-              Mint NFT 0
-            </Web3Button>
+            {address ? (
+              <Web3Button
+                contractAddress={myEditionDropContractAddress}
+                action={async (contract) => {
+                  await contract.erc1155.claim("0", quantity0);
+                  setMinted0(true);
+                }}
+              >
+                Mint NFT 0
+              </Web3Button>
+            ) : (
+              <p>Пожалуйста, подключите кошелек для минтинга</p>
+            )}
 
             {minted0 && (
               <button
                 className={styles.shareButton}
                 onClick={() => {
-                  const text = encodeURIComponent(`Я только что заминтил NFT "${nft0.metadata.name}"! Посмотри:`);
+                  const text = encodeURIComponent(`Я только что заминтил NFT \"${nft0.metadata.name}\"! Посмотри:`);
                   const url = encodeURIComponent(window.location.href);
                   window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
                 }}
@@ -93,22 +97,26 @@ const Home: NextPage = () => {
               className={styles.input}
             />
 
-            <Web3Button
-              contractAddress={myEditionDropContractAddress}
-              action={async (contract) => {
-                await contract.erc1155.claim("1", quantity1);
-                setMinted1(true);
-              }}
-            >
-              Mint NFT 1
-            </Web3Button>
+            {address ? (
+              <Web3Button
+                contractAddress={myEditionDropContractAddress}
+                action={async (contract) => {
+                  await contract.erc1155.claim("1", quantity1);
+                  setMinted1(true);
+                }}
+              >
+                Mint NFT 1
+              </Web3Button>
+            ) : (
+              <p>Пожалуйста, подключите кошелек для минтинга</p>
+            )}
 
             {minted1 && (
               <button
                 className={styles.shareButton}
                 onClick={() => {
-                  const text = encodeURIComponent(`Я только что заминтил NFT "${nft1.metadata.name}"! Посмотри:`);
-                  const url = encodeURIComponent(window.location.href);
+                  const text = encodeURIComponent(`Я только что заминтил NFT \"${nft1.metadata.name}\"! Посмотри:`);
+                    const url = encodeURIComponent(window.location.href);
                   window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
                 }}
               >
