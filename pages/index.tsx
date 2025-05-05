@@ -1,4 +1,3 @@
-// pages/index.tsx
 import {
   MediaRenderer,
   Web3Button,
@@ -68,9 +67,9 @@ const Home: NextPage = () => {
               <button
                 className={styles.shareButton}
                 onClick={() => {
-                  const text = encodeURIComponent(Я только что заминтил NFT "${nft0.metadata.name}"! Посмотри:);
+                  const text = encodeURIComponent(`Я только что заминтил NFT "${nft0.metadata.name}"! Посмотри:`);
                   const url = encodeURIComponent(window.location.href);
-                  window.open(https://twitter.com/intent/tweet?text=${text}&url=${url}, "_blank");
+                  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
                 }}
               >
                 Поделиться в X
@@ -108,9 +107,9 @@ const Home: NextPage = () => {
               <button
                 className={styles.shareButton}
                 onClick={() => {
-                  const text = encodeURIComponent(Я только что заминтил NFT "${nft1.metadata.name}"! Посмотри:);
+                  const text = encodeURIComponent(`Я только что заминтил NFT "${nft1.metadata.name}"! Посмотри:`);
                   const url = encodeURIComponent(window.location.href);
-                  window.open(https://twitter.com/intent/tweet?text=${text}&url=${url}, "_blank");
+                  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
                 }}
               >
                 Поделиться в X
