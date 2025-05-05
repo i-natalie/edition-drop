@@ -15,7 +15,6 @@ export default function Home() {
 
   const { data: nft0 } = useNFT(contract, "0");
   const { data: nft1 } = useNFT(contract, "1");
-
   const [mintedNFT, setMintedNFT] = useState<{ name: string; tokenId: string } | null>(null);
 
   const renderShareMessage = (tokenId: string) => {
@@ -83,8 +82,13 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      <h1>Мой NFT Минтинг</h1>
-      <ConnectWallet />
+      {/* Кнопка подключения кошелька — в правом верхнем углу */}
+      <div style={{ position: "absolute", top: 20, right: 20 }}>
+        <ConnectWallet />
+      </div>
+
+      {/* Заголовок из метаданных контракта */}
+      <h1 style={{ marginTop: 60 }}>{contract?.metadata?.name || "NFT Коллекция"}</h1>
 
       <div style={{ display: "flex", gap: "40px", marginTop: "40px" }}>
         {/* NFT 0 */}
