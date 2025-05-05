@@ -1,29 +1,35 @@
-// pages/index.tsx
-
-import { useAddress, useContract, useNFT, Web3Button, ConnectWallet } from "@thirdweb-dev/react";
+import {
+  useAddress,
+  useContract,
+  useNFT,
+  Web3Button,
+  ConnectWallet,
+} from "@thirdweb-dev/react";
 import { useState } from "react";
 
 const contractAddress = "0x8Dc21067Fefed800e844b2951A3f4DbD54c84037";
 
 export default function Home() {
   const address = useAddress();
-  const { contract, isLoading: isContractLoading } = useContract(contractAddress, "edition-drop");
+  const { contract } = useContract(contractAddress, "edition-drop");
   const { data: nft0 } = useNFT(contract, "0");
   const { data: nft1 } = useNFT(contract, "1");
 
   const [mintedTokenId, setMintedTokenId] = useState<string | null>(null);
 
-  const shareText = mintedTokenId === "0"
-    ? "Я только что заминтил NFT #0!"
-    : mintedTokenId === "1"
-    ? "Я только что заминтил NFT #1!"
-    : "";
+  const getShareText = (tokenId: string | null) => {
+    if (tokenId === "0") return "Я только что заминтил NFT #0!";
+    if (tokenId === "1") return "Я только что заминтил NFT #1!";
+    return "";
+  };
 
-  const shareUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+  const shareUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(
+    getShareText(mintedTokenId)
+  )}`;
 
   return (
     <div style={{ padding: 20, fontFamily: "sans-serif" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
         <h1>{contract?.metadata?.name || "NFT Коллекция"}</h1>
         <ConnectWallet />
       </div>
@@ -32,9 +38,21 @@ export default function Home() {
 
       {address && (
         <div style={{ display: "flex", gap: 40, marginTop: 40 }}>
-          {[nft0, nft1].map((nft, index) => (
-            nft && (
-              <div key={index} style={{ border: "1px solid #ccc", borderRadius: 10, padding: 20, width: 300 }}>
+          {[nft0, nft1].map((nft, index) => {
+            if (!nft) return null;
+
+            const tokenId = index.toString();
+
+            return (
+              <div
+                key={index}
+                style={{
+                  border: "1px solid #ccc",
+                  borderRadius: 10,
+                  padding: 20,
+                  width: 300,
+                }}
+              >
                 <h2>{String(nft.metadata.name) || NFT ${index}}</h2>
                 {typeof nft.metadata.image === "string" && (
                   <img
@@ -47,13 +65,13 @@ export default function Home() {
                   contractAddress={contract?.getAddress() || ""}
                   action={async (contract) => {
                     await contract.erc1155.claim(index, 1);
-                    setMintedTokenId(index.toString());
+                    setMintedTokenId(tokenId);
                   }}
                 >
                   МИНТИТЬ
                 </Web3Button>
 
-                {mintedTokenId === index.toString() && (
+                {mintedTokenId === tokenId && (
                   <div style={{ marginTop: 10 }}>
                     <p>Успешно заминчено!</p>
                     <a
@@ -75,8 +93,8 @@ export default function Home() {
                   </div>
                 )}
               </div>
-            )
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
