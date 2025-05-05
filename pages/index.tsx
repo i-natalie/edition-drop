@@ -22,16 +22,18 @@ const Home: NextPage = () => {
 
   const [quantity0, setQuantity0] = useState(1);
   const [quantity1, setQuantity1] = useState(1);
+  const [minted0, setMinted0] = useState(false);
+  const [minted1, setMinted1] = useState(false);
 
   return (
     <div className={styles.container}>
       <Head>
-        <title>{contractMetadata?.name || "Edition Drop"}</title>
+        <title>{contractMetadata?.name ?? "Edition Drop"}</title>
         <meta name="description" content="Mint your NFT!" />
       </Head>
 
       <h1 className={styles.title}>
-        {contractMetadata?.name || "NFT Collection"}
+        {contractMetadata?.name ?? "NFT Collection"}
       </h1>
 
       <div className={styles.grid}>
@@ -50,31 +52,28 @@ const Home: NextPage = () => {
               className={styles.input}
             />
 
-            <button
-  onClick={async () => {
-    if (!contract) return;
-    try {
-      await contract.erc1155.claim("0", quantity0);
-      alert("Успешно заминтили NFT 0!");
-    } catch (err) {
-      console.error(err);
-      alert("Ошибка при минтинге");
-    }
-  }}
->
-  Mint NFT 0
-</button>
-
-            <button
-              className={styles.shareButton}
-              onClick={() => {
-                const text = encodeURIComponent(`Я только что заминтил NFT "${nft0.metadata.name}"! Посмотри:`);
-                const url = encodeURIComponent(window.location.href);
-                window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
+            <Web3Button
+              contractAddress={myEditionDropContractAddress}
+              action={async (contract) => {
+                await contract.erc1155.claim("0", quantity0);
+                setMinted0(true);
               }}
             >
-              Поделиться в X
-            </button>
+              Mint NFT 0
+            </Web3Button>
+
+            {minted0 && (
+              <button
+                className={styles.shareButton}
+                onClick={() => {
+                  const text = encodeURIComponent(Я только что заминтил NFT "${nft0.metadata.name}"! Посмотри:);
+                  const url = encodeURIComponent(window.location.href);
+                  window.open(https://twitter.com/intent/tweet?text=${text}&url=${url}, "_blank");
+                }}
+              >
+                Поделиться в X
+              </button>
+            )}
           </div>
         )}
 
@@ -93,31 +92,28 @@ const Home: NextPage = () => {
               className={styles.input}
             />
 
-          <button
-  onClick={async () => {
-    if (!contract) return;
-    try {
-      await contract.erc1155.claim("1", quantity1);
-      alert("Успешно заминтили NFT 1!");
-    } catch (err) {
-      console.error(err);
-      alert("Ошибка при минтинге");
-    }
-  }}
->
-  Mint NFT 1
-</button>
-
-            <button
-              className={styles.shareButton}
-              onClick={() => {
-                const text = encodeURIComponent(`Я только что заминтил NFT "${nft1.metadata.name}"! Посмотри:`);
-                const url = encodeURIComponent(window.location.href);
-                window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
+            <Web3Button
+              contractAddress={myEditionDropContractAddress}
+              action={async (contract) => {
+                await contract.erc1155.claim("1", quantity1);
+                setMinted1(true);
               }}
             >
-              Поделиться в X
-            </button>
+              Mint NFT 1
+            </Web3Button>
+
+            {minted1 && (
+              <button
+                className={styles.shareButton}
+                onClick={() => {
+                  const text = encodeURIComponent(Я только что заминтил NFT "${nft1.metadata.name}"! Посмотри:);
+                  const url = encodeURIComponent(window.location.href);
+                  window.open(https://twitter.com/intent/tweet?text=${text}&url=${url}, "_blank");
+                }}
+              >
+                Поделиться в X
+              </button>
+            )}
           </div>
         )}
       </div>
