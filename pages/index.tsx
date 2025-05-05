@@ -20,14 +20,16 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
+      {/* Только одна кнопка Connect Wallet */}
       <div style={{ position: "absolute", top: 20, right: 20 }}>
         <ConnectWallet />
       </div>
 
-      <h1 style={{ marginTop: 60 }}>{metadata?.name || "NFT Коллекция"}</h1>
+      {/* Точное название коллекции из смарт-контракта */}
+      {metadata && <h1 style={{ marginTop: 60 }}>{metadata.name}</h1>}
 
+      {/* NFT-элементы */}
       <div style={{ display: "flex", gap: "40px", marginTop: "40px" }}>
-        {/* NFT 0 */}
         {nft0 && (
           <div>
             <MediaRenderer src={nft0.metadata.image} width="200px" height="200px" />
@@ -36,7 +38,7 @@ export default function Home() {
               contractAddress="0x8Dc21067Fefed800e844b2951A3f4DbD54c84037"
               action={async (contract) => {
                 await contract.erc1155.claim("0", 1);
-                setMintedNFT({ name: String(nft0.metadata.name || ""), tokenId: "0" });
+                setMintedNFT({ name: String(nft0.metadata.name), tokenId: "0" });
               }}
             >
               Минт NFT 0
@@ -44,7 +46,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* NFT 1 */}
         {nft1 && (
           <div>
             <MediaRenderer src={nft1.metadata.image} width="200px" height="200px" />
@@ -53,7 +54,7 @@ export default function Home() {
               contractAddress="0x8Dc21067Fefed800e844b2951A3f4DbD54c84037"
               action={async (contract) => {
                 await contract.erc1155.claim("1", 1);
-                setMintedNFT({ name: String(nft1.metadata.name || ""), tokenId: "1" });
+                setMintedNFT({ name: String(nft1.metadata.name), tokenId: "1" });
               }}
             >
               Минт NFT 1
@@ -62,6 +63,7 @@ export default function Home() {
         )}
       </div>
 
+      {/* Кнопка поделиться в X после минтинга */}
       {mintedNFT && (
         <div
           style={{
