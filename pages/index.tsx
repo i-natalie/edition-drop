@@ -1,149 +1,170 @@
 // pages/index.tsx
+
 import {
-  MediaRenderer,
-  Web3Button,
   useAddress,
   useContract,
-  useContractMetadata,
   useNFT,
+  useClaimNFT,
+  ConnectWallet,
 } from "@thirdweb-dev/react";
-import { NextPage } from "next";
-import Head from "next/head";
-import styles from "../styles/Home.module.css";
-import { myEditionDropContractAddress } from "../const/yourDetails";
 import { useState } from "react";
 
-const Home: NextPage = () => {
+const contractAddress = "0x2e8Ce20dB72850bC63B8dc362Dd89AC99c1aB7F5";
+
+export default function Home() {
   const address = useAddress();
-  const { contract } = useContract(myEditionDropContractAddress, "edition-drop");
-  const { data: contractMetadata } = useContractMetadata(contract);
+  const { contract } = useContract(contractAddress, "edition-drop");
+
   const { data: nft0 } = useNFT(contract, "0");
   const { data: nft1 } = useNFT(contract, "1");
 
-  const [quantity0, setQuantity0] = useState(1);
-  const [quantity1, setQuantity1] = useState(1);
+  const { mutateAsync: claimNFT0, isLoading: loading0 } = useClaimNFT(contract);
+  const { mutateAsync: claimNFT1, isLoading: loading1 } = useClaimNFT(contract);
 
-  const [mintedNFT, setMintedNFT] = useState<null | { name: string }> (null);
+  const [quantity0] = useState(1);
+  const [quantity1] = useState(1);
+
+  const [mintedNFT, setMintedNFT] = useState<{ name: string } | null>(null);
+
+  const handleShare = () => {
+    if (!mintedNFT?.name) return;
+
+    const baseText =
+      mintedNFT.name === "NFT 0"
+        ? "Я только что заминтил NFT 0!"
+        : "Я только что заминтил NFT 1!";
+    const url = "https://edition-drop-i-natalie.vercel.app/";
+
+    const shareUrl = https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      ${baseText} ${url}
+    )};
+
+    window.open(shareUrl, "_blank");
+  };
+
+  const handleCloseMessage = () => {
+    setMintedNFT(null);
+  };
 
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>{contractMetadata?.name || "Edition Drop"}</title>
-        <meta name="description" content="Mint your NFT!" />
-      </Head>
+    <main style={{ padding: "100px 20px 40px", textAlign: "center" }}>
+      <h1>Минтинг NFT</h1>
 
       {!address && (
-        <div style={{ textAlign: "center", marginTop: "2rem" }}>
-          <p>Пожалуйста, подключите кошелёк.</p>
+        <div style={{ marginTop: "20px" }}>
+          <ConnectWallet />
         </div>
       )}
 
-      <h1 className={styles.title}>
-        {contractMetadata?.name || "NFT Collection"}
-      </h1>
+      {address && (
+        <div style={{ display: "flex", flexDirection: "column", gap: "40px", alignItems: "center", marginTop: "40px" }}>
+          {/* NFT 0 */}
+          {nft0 && (
+            <div style={{ border: "1px solid #ccc", padding: "20px", borderRadius: "12px", maxWidth: "400px" }}>
+              <img src={nft0.metadata.image} alt={nft0.metadata.name || "NFT 0"} style={{ width: "100%", borderRadius: "8px" }} />
+              <h2>{nft0.metadata.name}</h2>
+              <p>{nft0.metadata.description}</p>
+              <button
+                disabled={loading0}
+                onClick={async () => {
+                  await claimNFT0({ to: address, tokenId: "0", quantity: quantity0 });
+                  setMintedNFT({ name: nft0.metadata.name ?? "NFT 0" });
+                }}
+                style={{
+                  padding: "10px 20px",
+                  backgroundColor: "#4CAF50",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  marginTop: "10px",
+                }}
+              >
+                {loading0 ? "Минтим..." : "Минт NFT 0"}
+              </button>
+            </div>
+          )}
 
-      <div className={styles.grid}>
-        {/* NFT 0 */}
-        {nft0 && (
-          <div className={styles.card}>
-            <MediaRenderer src={nft0.metadata.image} width="100%" height="auto" />
-            <h3>{nft0.metadata.name}</h3>
-            <p>{nft0.metadata.description}</p>
-
-            <input
-              type="number"
-              value={quantity0}
-              min={1}
-              onChange={(e) => setQuantity0(Number(e.target.value))}
-              className={styles.input}
-            />
-
-            <Web3Button
-              contractAddress={myEditionDropContractAddress}
-              action={async (contract) => {
-                await contract.erc1155.claim("0", quantity0);
-                setMintedNFT({ name: nft0.metadata.name });
-              }}
-            >
-              Mint NFT 0
-            </Web3Button>
-          </div>
-        )}
-
-        {/* NFT 1 */}
-        {nft1 && (
-          <div className={styles.card}>
-            <MediaRenderer src={nft1.metadata.image} width="100%" height="auto" />
-            <h3>{nft1.metadata.name}</h3>
-            <p>{nft1.metadata.description}</p>
-
-            <input
-              type="number"
-              value={quantity1}
-              min={1}
-              onChange={(e) => setQuantity1(Number(e.target.value))}
-              className={styles.input}
-            />
-
-            <Web3Button
-              contractAddress={myEditionDropContractAddress}
-              action={async (contract) => {
-                await contract.erc1155.claim("1", quantity1);
-                setMintedNFT({ name: nft1.metadata.name });
-              }}
-            >
-              Mint NFT 1
-            </Web3Button>
-          </div>
-        )}
-      </div>
-
-      {/* Модальное окно успешного минта */}
+          {/* NFT 1 */}
+          {nft1 && (
+            <div style={{ border: "1px solid #ccc", padding: "20px", borderRadius: "12px", maxWidth: "400px" }}>
+              <img src={nft1.metadata.image} alt={nft1.metadata.name || "NFT 1"} style={{ width: "100%", borderRadius: "8px" }} />
+              <h2>{nft1.metadata.name}</h2>
+              <p>{nft1.metadata.description}</p>
+              <button
+                disabled={loading1}
+                onClick={async () => {
+                  await claimNFT1({ to: address, tokenId: "1", quantity: quantity1 });
+                  setMintedNFT({ name: nft1.metadata.name ?? "NFT 1" });
+                }}
+                style={{
+                  padding: "10px 20px",
+                  backgroundColor: "#4CAF50",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  marginTop: "10px",
+                }}
+              >
+                {loading1 ? "Минтим..." : "Минт NFT 1"}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+      {/* Уведомление об успешном минтинге */}
       {mintedNFT && (
-        <div style={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          background: "white",
-          padding: "2rem",
-          borderRadius: "12px",
-          boxShadow: "0 0 20px rgba(0, 0, 0, 0.2)",
-          zIndex: 2000,
-          textAlign: "center",
-        }}>
-          <h2>Успешный минтинг!</h2>
-          <p>Вы заминтили: <strong>{mintedNFT.name}</strong></p>
+        <div
+          style={{
+            position: "fixed",
+            top: "30%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            background: "#fff",
+            padding: "24px",
+            borderRadius: "12px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            zIndex: 1000,
+            textAlign: "center",
+            width: "90%",
+            maxWidth: "400px",
+          }}
+        >
           <button
+            onClick={handleCloseMessage}
             style={{
-              marginTop: "1rem",
-              padding: "0.5rem 1rem",
-              borderRadius: "8px",
+              position: "absolute",
+              top: "8px",
+              right: "12px",
+              background: "transparent",
+              border: "none",
+              fontSize: "20px",
+              cursor: "pointer",
+              color: "#999",
+            }}
+            aria-label="Закрыть"
+          >
+            ×
+          </button>
+
+          <h3>Вы успешно заминтили {mintedNFT.name}!</h3>
+          <button
+            onClick={handleShare}
+            style={{
+              marginTop: "16px",
+              padding: "10px 20px",
               backgroundColor: "#1DA1F2",
               color: "white",
               border: "none",
+              borderRadius: "8px",
               cursor: "pointer",
-            }}
-            onClick={() => {
-              const text = encodeURIComponent(`Я только что заминтил NFT "${mintedNFT.name}"! Посмотри:`);
-              const url = encodeURIComponent(window.location.href);
-              window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
             }}
           >
             Поделиться в X
           </button>
-          <div style={{ marginTop: "1rem" }}>
-            <button
-              onClick={() => setMintedNFT(null)}
-              style={{ background: "none", border: "none", color: "#555", cursor: "pointer" }}
-            >
-              Закрыть
-            </button>
-          </div>
         </div>
       )}
-    </div>
+    </main>
   );
-};
-
-export default Home;
+}
