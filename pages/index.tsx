@@ -1,3 +1,4 @@
+// pages/index.tsx
 import {
   MediaRenderer,
   Web3Button,
@@ -22,18 +23,19 @@ const Home: NextPage = () => {
 
   const [quantity0, setQuantity0] = useState(1);
   const [quantity1, setQuantity1] = useState(1);
+
   const [minted0, setMinted0] = useState(false);
   const [minted1, setMinted1] = useState(false);
 
   return (
     <div className={styles.container}>
       <Head>
-        <title>{contractMetadata?.name ?? "Edition Drop"}</title>
+        <title>{contractMetadata?.name || "Edition Drop"}</title>
         <meta name="description" content="Mint your NFT!" />
       </Head>
 
       <h1 className={styles.title}>
-        {contractMetadata?.name ?? "NFT Collection"}
+        {contractMetadata?.name || "NFT Collection"}
       </h1>
 
       <div className={styles.grid}>
