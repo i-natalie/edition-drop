@@ -1,94 +1,84 @@
-import {
-  ConnectWallet,
-  Web3Button,
-  useContract,
-  useNFT,
-  useContractMetadata,
-} from "@thirdweb-dev/react";
-import { useEffect, useState } from "react";
+// pages/index.tsx
+
+import { useAddress, useContract, useNFT, Web3Button, ConnectWallet } from "@thirdweb-dev/react";
+import { useState } from "react";
+
+const contractAddress = "0x8Dc21067Fefed800e844b2951A3f4DbD54c84037";
 
 export default function Home() {
-  const { contract } = useContract("0x8Dc21067Fefed800e844b2951A3f4DbD54c84037", "edition-drop");
-  const { data: metadata } = useContractMetadata(contract);
+  const address = useAddress();
+  const { contract, isLoading: isContractLoading } = useContract(contractAddress, "edition-drop");
   const { data: nft0 } = useNFT(contract, "0");
   const { data: nft1 } = useNFT(contract, "1");
 
-  const [mintedNFT, setMintedNFT] = useState<null | { name: string; tokenId: string }>(null);
-  const [shareUrl, setShareUrl] = useState<string>("");
+  const [mintedTokenId, setMintedTokenId] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (typeof window !== "undefined" && mintedNFT) {
-      const text =
-        mintedNFT.tokenId === "0"
-          ? "Я только что получил NFT #0! Проверь и ты!"
-          : "Я только что получил NFT #1! Успей и ты!";
-      const url = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`;
-      setShareUrl(url);
-    }
-  }, [mintedNFT]);
+  const shareText = mintedTokenId === "0"
+    ? "Я только что заминтил NFT #0!"
+    : mintedTokenId === "1"
+    ? "Я только что заминтил NFT #1!"
+    : "";
+
+  const shareUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
 
   return (
-    <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
+    <div style={{ padding: 20, fontFamily: "sans-serif" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h1>{metadata?.name || "NFT Коллекция"}</h1>
+        <h1>{contract?.metadata?.name || "NFT Коллекция"}</h1>
         <ConnectWallet />
       </div>
 
-      <div style={{ marginTop: "40px", display: "flex", gap: "40px" }}>
-        {nft0 && (
-          <div>
-            <h2>{nft0.metadata.name || "NFT 0"}</h2>
-            {typeof nft0.metadata.image === "string" && (
-              <img src={nft0.metadata.image} alt={nft0.metadata.name || "NFT 0"} width={200} />
-            )}
-            <Web3Button
-              contractAddress={contract?.getAddress() || ""}
-              action={async (contract) => {
-                await contract.erc1155.claim("0", 1);
-                setMintedNFT({ name: nft0.metadata.name || "NFT 0", tokenId: "0" });
-              }}
-            >
-              Минт NFT 0
-            </Web3Button>
+      {!address && <p>Пожалуйста, подключите кошелёк</p>}
 
-            {mintedNFT?.tokenId === "0" && (
-              <>
-                <p>Успешно заминчено!</p>
-                <a href={shareUrl} target="_blank" rel="noopener noreferrer">
-                  <button>Поделиться в X</button>
-                </a>
-              </>
-            )}
-          </div>
-        )}
+      {address && (
+        <div style={{ display: "flex", gap: 40, marginTop: 40 }}>
+          {[nft0, nft1].map((nft, index) => (
+            nft && (
+              <div key={index} style={{ border: "1px solid #ccc", borderRadius: 10, padding: 20, width: 300 }}>
+                <h2>{String(nft.metadata.name) || NFT ${index}}</h2>
+                {typeof nft.metadata.image === "string" && (
+                  <img
+                    src={String(nft.metadata.image)}
+                    alt={String(nft.metadata.name || NFT ${index})}
+                    width={200}
+                  />
+                )}
+                <Web3Button
+                  contractAddress={contract?.getAddress() || ""}
+                  action={async (contract) => {
+                    await contract.erc1155.claim(index, 1);
+                    setMintedTokenId(index.toString());
+                  }}
+                >
+                  МИНТИТЬ
+                </Web3Button>
 
-        {nft1 && (
-          <div>
-            <h2>{nft1.metadata.name || "NFT 1"}</h2>
-            {typeof nft1.metadata.image === "string" && (
-              <img src={nft1.metadata.image} alt={nft1.metadata.name || "NFT 1"} width={200} />
-            )}
-            <Web3Button
-              contractAddress={contract?.getAddress() || ""}
-              action={async (contract) => {
-                await contract.erc1155.claim("1", 1);
-                setMintedNFT({ name: nft1.metadata.name || "NFT 1", tokenId: "1" });
-              }}
-            >
-              Минт NFT 1
-            </Web3Button>
-
-            {mintedNFT?.tokenId === "1" && (
-              <>
-                <p>Успешно заминчено!</p>
-                <a href={shareUrl} target="_blank" rel="noopener noreferrer">
-                  <button>Поделиться в X</button>
-                </a>
-              </>
-            )}
-          </div>
-        )}
-      </div>
+                {mintedTokenId === index.toString() && (
+                  <div style={{ marginTop: 10 }}>
+                    <p>Успешно заминчено!</p>
+                    <a
+                      href={shareUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: "inline-block",
+                        marginTop: 5,
+                        background: "#1DA1F2",
+                        color: "white",
+                        padding: "6px 12px",
+                        borderRadius: 5,
+                        textDecoration: "none",
+                      }}
+                    >
+                      Поделиться в X
+                    </a>
+                  </div>
+                )}
+              </div>
+            )
+          ))}
+        </div>
+      )}
     </div>
   );
 }
