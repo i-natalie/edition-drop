@@ -20,50 +20,51 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      {/* Только одна кнопка Connect Wallet */}
+      {/* Единственная кнопка Connect Wallet */}
       <div style={{ position: "absolute", top: 20, right: 20 }}>
         <ConnectWallet />
       </div>
 
-      {/* Точное название коллекции из смарт-контракта */}
+      {/* Название коллекции строго из метаданных */}
       {metadata && <h1 style={{ marginTop: 60 }}>{metadata.name}</h1>}
 
-      {/* NFT-элементы */}
-      <div style={{ display: "flex", gap: "40px", marginTop: "40px" }}>
-        {nft0 && (
-          <div>
-            <MediaRenderer src={nft0.metadata.image} width="200px" height="200px" />
-            <p>{nft0.metadata.name}</p>
-            <Web3Button
-              contractAddress="0x8Dc21067Fefed800e844b2951A3f4DbD54c84037"
-              action={async (contract) => {
-                await contract.erc1155.claim("0", 1);
-                setMintedNFT({ name: String(nft0.metadata.name), tokenId: "0" });
-              }}
-            >
-              Минт NFT 0
-            </Web3Button>
-          </div>
-        )}
+      {/* NFT-карточки, только если кошелек подключен */}
+      {address && (
+        <div style={{ display: "flex", gap: "40px", marginTop: "40px" }}>
+          {nft0 && (
+            <div>
+              <MediaRenderer src={nft0.metadata.image} width="200px" height="200px" />
+              <p>{nft0.metadata.name}</p>
+              <Web3Button
+                contractAddress="0x8Dc21067Fefed800e844b2951A3f4DbD54c84037"
+                action={async (contract) => {
+                  await contract.erc1155.claim("0", 1);
+                  setMintedNFT({ name: String(nft0.metadata.name), tokenId: "0" });
+                }}
+              >
+                Минт NFT 0
+              </Web3Button>
+            </div>
+          )}
+          {nft1 && (
+            <div>
+              <MediaRenderer src={nft1.metadata.image} width="200px" height="200px" />
+              <p>{nft1.metadata.name}</p>
+              <Web3Button
+                contractAddress="0x8Dc21067Fefed800e844b2951A3f4DbD54c84037"
+                action={async (contract) => {
+                  await contract.erc1155.claim("1", 1);
+                  setMintedNFT({ name: String(nft1.metadata.name), tokenId: "1" });
+                }}
+              >
+                Минт NFT 1
+              </Web3Button>
+            </div>
+          )}
+        </div>
+      )}
 
-        {nft1 && (
-          <div>
-            <MediaRenderer src={nft1.metadata.image} width="200px" height="200px" />
-            <p>{nft1.metadata.name}</p>
-            <Web3Button
-              contractAddress="0x8Dc21067Fefed800e844b2951A3f4DbD54c84037"
-              action={async (contract) => {
-                await contract.erc1155.claim("1", 1);
-                setMintedNFT({ name: String(nft1.metadata.name), tokenId: "1" });
-              }}
-            >
-              Минт NFT 1
-            </Web3Button>
-          </div>
-        )}
-      </div>
-
-      {/* Кнопка поделиться в X после минтинга */}
+      {/* Кнопка "Поделиться", если успешно заминтили */}
       {mintedNFT && (
         <div
           style={{
