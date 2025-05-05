@@ -14,23 +14,24 @@ export default function Home() {
   const address = useAddress();
   const { contract } = useContract("0x8Dc21067Fefed800e844b2951A3f4DbD54c84037", "edition-drop");
   const { data: metadata } = useContractMetadata(contract);
-  const { data: nft0 } = useNFT(contract, "0");
-  const { data: nft1 } = useNFT(contract, "1");
+  const { data: nft0, isLoading: loading0 } = useNFT(contract, "0");
+  const { data: nft1, isLoading: loading1 } = useNFT(contract, "1");
   const [mintedNFT, setMintedNFT] = useState<{ name: string; tokenId: string } | null>(null);
 
   return (
     <div className={styles.container}>
-      {/* Единственная кнопка Connect Wallet */}
+      {/* Кнопка подключения */}
       <div style={{ position: "absolute", top: 20, right: 20 }}>
         <ConnectWallet />
       </div>
 
-      {/* Название коллекции строго из метаданных */}
+      {/* Заголовок */}
       {metadata && <h1 style={{ marginTop: 60 }}>{metadata.name}</h1>}
 
-      {/* NFT-карточки, только если кошелек подключен */}
+      {/* Загрузка или NFT */}
       {address && (
         <div style={{ display: "flex", gap: "40px", marginTop: "40px" }}>
+          {(loading0 || loading1) && <p>Загрузка NFT...</p>}
           {nft0 && (
             <div>
               <MediaRenderer src={nft0.metadata.image} width="200px" height="200px" />
@@ -64,7 +65,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* Кнопка "Поделиться", если успешно заминтили */}
+      {/* Кнопка "Поделиться" */}
       {mintedNFT && (
         <div
           style={{
