@@ -35,8 +35,8 @@ export default function Home() {
         : "Я только что заминтил NFT 1!";
     const url = "https://edition-drop-i-natalie.vercel.app/";
 
-    const shareUrl = https://twitter.com/intent/tweet?text=${encodeURIComponent(
-      ${baseText} ${url}
+    const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      ${baseText} ${url}`
     )};
 
     window.open(shareUrl, "_blank");
