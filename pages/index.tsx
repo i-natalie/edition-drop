@@ -96,7 +96,7 @@ export default function Home() {
               contractAddress="0x8Dc21067Fefed800e844b2951A3f4DbD54c84037"
               action={async (contract) => {
                 await contract.erc1155.claim("0", 1);
-                setMintedNFT({ name: nft0.metadata.name ?? "", tokenId: "0" });
+                setMintedNFT({ name: String(nft0.metadata.name ?? ""), tokenId: "0" });
               }}
             >
               Минт NFT 0
@@ -113,7 +113,7 @@ export default function Home() {
               contractAddress="0x8Dc21067Fefed800e844b2951A3f4DbD54c84037"
               action={async (contract) => {
                 await contract.erc1155.claim("1", 1);
-                setMintedNFT({ name: nft1.metadata.name ?? "", tokenId: "1" });
+                setMintedNFT({ name: String(nft1.metadata.name ?? ""), tokenId: "1" });
               }}
             >
               Минт NFT 1
