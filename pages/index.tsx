@@ -12,11 +12,11 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import { useState } from "react";
 
-const contractAddress = "0x8Dc21067Fefed800e844b2951A3f4DbD54c84037";
+const myEditionDropContractAddress = "0x8Dc21067Fefed800e844b2951A3f4DbD54c84037";
 
 const Home: NextPage = () => {
   const address = useAddress();
-  const { contract } = useContract(contractAddress, "edition-drop");
+  const { contract } = useContract(myEditionDropContractAddress, "edition-drop");
   const { data: contractMetadata } = useContractMetadata(contract);
 
   const { data: nft0 } = useNFT(contract, "0");
@@ -56,7 +56,7 @@ const Home: NextPage = () => {
             />
 
             <Web3Button
-              contractAddress={contractAddress}
+              contractAddress={myEditionDropContractAddress}
               action={(contract) =>
                 contract.erc1155.claim("0", quantity0).then(() => setMinted0(true))
               }
@@ -95,7 +95,7 @@ const Home: NextPage = () => {
             />
 
             <Web3Button
-              contractAddress={contractAddress}
+              contractAddress={myEditionDropContractAddress}
               action={(contract) =>
                 contract.erc1155.claim("1", quantity1).then(() => setMinted1(true))
               }
