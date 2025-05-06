@@ -24,31 +24,8 @@ const Home: NextPage = () => {
 
   const [quantity0, setQuantity0] = useState(1);
   const [quantity1, setQuantity1] = useState(1);
-  const [mintedTokenId, setMintedTokenId] = useState<string | null>(null);
-
-  const getTweetText = (tokenId: string) => {
-    if (tokenId === "0") {
-      return encodeURIComponent("Я только что заминтил NFT #0! Проверь сам: https://your-mint-site.com");
-    } else if (tokenId === "1") {
-      return encodeURIComponent("Я только что заминтил NFT #1! Загляни: https://your-mint-site.com");
-    }
-    return encodeURIComponent("Я только что заминтил NFT! Посмотри: https://your-mint-site.com");
-  };
-
-  const renderShareButton = () => {
-    if (!mintedTokenId) return null;
-    const tweetText = getTweetText(mintedTokenId);
-    return (
-      <a
-        href={`https://twitter.com/intent/tweet?text=${tweetText}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={styles.shareButton}
-      >
-        Поделиться в X
-      </a>
-    );
-  };
+  const [minted0, setMinted0] = useState(false); // Состояние для NFT 0
+  const [minted1, setMinted1] = useState(false); // Состояние для NFT 1
 
   return (
     <div className={styles.container}>
@@ -57,39 +34,103 @@ const Home: NextPage = () => {
         <meta name="description" content="Mint your NFT!" />
       </Head>
 
-      <h1>{contractMetadata?.name}</h1>
+      <h1 className={styles.title}>
+        {contractMetadata?.name || "NFT Collection"}
+      </h1>
 
-      <div className={styles.nftBox}>
+      <div className={styles.grid}>
+        {/* NFT 0 */}
         {nft0 && (
-          <div className={styles.nftItem}>
-            <MediaRenderer src={nft0.metadata.image} />
+          <div className={styles.card}>
+            <MediaRenderer src={nft0.metadata.image} width="100%" height="auto" />
             <h3>{nft0.metadata.name}</h3>
-            <Web3Button
-              contractAddress={myEditionDropContractAddress}
-              action={(contract) => contract.erc1155.claim("0", quantity0)}
-              onSuccess={() => setMintedTokenId("0")}
+            <p>{nft0.metadata.description}</p>
+
+            <input
+              type="number"
+              value={quantity0}
+              min={1}
+              onChange={(e) => setQuantity0(Number(e.target.value))}
+              className={styles.input}
+            />
+
+            <button
+              onClick={async () => {
+                if (!contract) return;
+                try {
+                  await contract.erc1155.claim("0", quantity0);
+                  setMinted0(true); // Устанавливаем, что NFT 0 заминчен
+                  alert("Успешно заминтили NFT 0!");
+                } catch (err) {
+                  console.error(err);
+                  alert("Ошибка при минтинге");
+                }
+              }}
             >
               Mint NFT 0
-            </Web3Button>
+            </button>
+
+            {minted0 && (
+              <button
+                className={styles.shareButton}
+                onClick={() => {
+                  const text = encodeURIComponent(`Я только что заминтил NFT "${nft0.metadata.name}"! Посмотри:`);
+                  const url = encodeURIComponent(window.location.href);
+                  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
+                }}
+              >
+                Поделиться в X
+              </button>
+            )}
           </div>
         )}
 
+        {/* NFT 1 */}
         {nft1 && (
-          <div className={styles.nftItem}>
-            <MediaRenderer src={nft1.metadata.image} />
+          <div className={styles.card}>
+            <MediaRenderer src={nft1.metadata.image} width="100%" height="auto" />
             <h3>{nft1.metadata.name}</h3>
-            <Web3Button
-              contractAddress={myEditionDropContractAddress}
-              action={(contract) => contract.erc1155.claim("1", quantity1)}
-              onSuccess={() => setMintedTokenId("1")}
+            <p>{nft1.metadata.description}</p>
+
+            <input
+              type="number"
+              value={quantity1}
+              min={1}
+              onChange={(e) => setQuantity1(Number(e.target.value))}
+              className={styles.input}
+            />
+
+            <button
+              onClick={async () => {
+                if (!contract) return;
+                try {
+                  await contract.erc1155.claim("1", quantity1);
+                  setMinted1(true); // Устанавливаем, что NFT 1 заминчен
+                  alert("Успешно заминтили NFT 1!");
+                } catch (err) {
+                  console.error(err);
+                  alert("Ошибка при минтинге NFT 1");
+                }
+              }}
             >
               Mint NFT 1
-            </Web3Button>
+            </button>
+
+            {minted1 && (
+              <button
+                className={styles.shareButton}
+                onClick={() => {
+                  const text = encodeURIComponent(`Я только что заминтил NFT "${nft1.metadata.name}"! Посмотри:`);
+                  const url = encodeURIComponent(window.location.href);
+                  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
+                }}
+              >
+                Поделиться в X
+              </button>
+            )}
           </div>
         )}
       </div>
-
-      {renderShareButton()}
     </div>
   );
 };
