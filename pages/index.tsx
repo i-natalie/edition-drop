@@ -27,12 +27,6 @@ const Home: NextPage = () => {
   const [minted0, setMinted0] = useState(false);
   const [minted1, setMinted1] = useState(false);
 
-  const handleShare = (nftName: string) => {
-    const text = encodeURIComponent(`Я только что заминтил NFT \"${nftName}\"! Посмотри:`);
-    const url = encodeURIComponent(window.location.href);
-    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
-  };
-
   return (
     <div className={styles.container}>
       <Head>
@@ -72,7 +66,11 @@ const Home: NextPage = () => {
             {minted0 && (
               <button
                 className={styles.shareButton}
-                onClick={() => handleShare(nft0.metadata.name)}
+                onClick={() => {
+                  const text = encodeURIComponent(`Я только что заминтил NFT "${nft0.metadata.name}"! Посмотри:`);
+                  const url = encodeURIComponent(window.location.href);
+                  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
+                }}
               >
                 Поделиться в X
               </button>
@@ -107,7 +105,11 @@ const Home: NextPage = () => {
             {minted1 && (
               <button
                 className={styles.shareButton}
-                onClick={() => handleShare(nft1.metadata.name)}
+                onClick={() => {
+                  const text = encodeURIComponent(`Я только что заминтил NFT "${nft1.metadata.name}"! Посмотри:`);
+                  const url = encodeURIComponent(window.location.href);
+                  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
+                }}
               >
                 Поделиться в X
               </button>
