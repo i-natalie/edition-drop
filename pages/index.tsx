@@ -25,9 +25,6 @@ const Home: NextPage = () => {
   const [quantity0, setQuantity0] = useState(1);
   const [quantity1, setQuantity1] = useState(1);
 
-  const [minted0, setMinted0] = useState(false);
-  const [minted1, setMinted1] = useState(false);
-
   return (
     <div className={styles.container}>
       <Head>
@@ -57,25 +54,21 @@ const Home: NextPage = () => {
 
             <Web3Button
               contractAddress={myEditionDropContractAddress}
-              action={(contract) =>
-                contract.erc1155.claim("0", quantity0).then(() => setMinted0(true))
-              }
+              action={(contract) => contract.erc1155.claim("0", quantity0)}
             >
               Mint NFT 0
             </Web3Button>
 
-            {minted0 && (
-              <button
-                className={styles.shareButton}
-                onClick={() => {
-                  const text = encodeURIComponent(`Я только что заминтил NFT "${nft0.metadata.name}"! Посмотри:`);
-                  const url = encodeURIComponent(window.location.href);
-                  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
-                }}
-              >
-                Поделиться в X
-              </button>
-            )}
+            <button
+              className={styles.shareButton}
+              onClick={() => {
+                const text = encodeURIComponent(`Я только что заминтил NFT "${nft0.metadata.name}"! Посмотри:`);
+                const url = encodeURIComponent(window.location.href);
+                window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
+              }}
+            >
+              Поделиться в X
+            </button>
           </div>
         )}
 
@@ -96,25 +89,21 @@ const Home: NextPage = () => {
 
             <Web3Button
               contractAddress={myEditionDropContractAddress}
-              action={(contract) =>
-                contract.erc1155.claim("1", quantity1).then(() => setMinted1(true))
-              }
+              action={(contract) => contract.erc1155.claim("1", quantity1)}
             >
               Mint NFT 1
             </Web3Button>
 
-            {minted1 && (
-              <button
-                className={styles.shareButton}
-                onClick={() => {
-                  const text = encodeURIComponent(`Я только что заминтил NFT "${nft1.metadata.name}"! Посмотри:`);
-                  const url = encodeURIComponent(window.location.href);
-                  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
-                }}
-              >
-                Поделиться в X
-              </button>
-            )}
+            <button
+              className={styles.shareButton}
+              onClick={() => {
+                const text = encodeURIComponent(`Я только что заминтил NFT "${nft1.metadata.name}"! Посмотри:`);
+                const url = encodeURIComponent(window.location.href);
+                window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
+              }}
+            >
+              Поделиться в X
+            </button>
           </div>
         )}
       </div>
