@@ -1,3 +1,4 @@
+// pages/index.tsx
 import {
   MediaRenderer,
   Web3Button,
