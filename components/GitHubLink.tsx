@@ -1,41 +1,17 @@
-import React from "react";
+// components/GitHubLink.tsx
+import Image from "next/image";
 
-export default function ThirdwebGuideFooter() {
-  const url = "https://github.com/thirdweb-example/edition-drop";
+const GitHubLink = () => {
   return (
-    <>
-      <div
-        style={{
-          position: "fixed",
-          bottom: -120,
-          right: -80,
-          height: 300,
-          width: 150,
-          border: "1px solid #eaeaea",
-          transform: "rotate(45deg)",
-          backgroundColor: " #262935",
-          cursor: "pointer",
-        }}
-        role="button"
-        onClick={() => window.open(url, "_blank")}
+    <a href="https://github.com/your-repo">
+      <Image
+        src="/path-to-your-image.png" // Укажи путь к изображению
+        alt="GitHub repository link"
+        width={50} // Укажи ширину
+        height={50} // Укажи высоту
       />
-
-      <div
-        style={{
-          position: "fixed",
-          bottom: 14,
-          right: 18,
-        }}
-      >
-        <img
-          src={"/github.png"}
-          width={40}
-          height={40}
-          role="button"
-          style={{ cursor: "pointer" }}
-          onClick={() => window.open(url, "_blank")}
-        />
-      </div>
-    </>
+    </a>
   );
-}
+};
+
+export default GitHubLink;
