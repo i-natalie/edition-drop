@@ -101,7 +101,7 @@ const Home: NextPage = () => {
               ×
             </span>
             <h2>
-              Успешно заминтили NFT <span>"{mintedNFT.metadata.name}"</span>!
+              Успешно заминтили NFT &quot;{mintedNFT.metadata.name}&quot;!
             </h2>
             <button className={styles.shareButton} onClick={handleShare}>
               Поделиться в X
