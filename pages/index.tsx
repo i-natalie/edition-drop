@@ -98,9 +98,11 @@ const Home: NextPage = () => {
         <div className={styles.modal}>
           <div className={styles.modalContent}>
             <span className={styles.close} onClick={() => setModalOpen(false)}>
-              &times;
+              ×
             </span>
-            <h2>Успешно заминтили NFT "{mintedNFT.metadata.name}"!</h2>
+            <h2>
+              Успешно заминтили NFT <span>&quot;{mintedNFT.metadata.name}&quot;</span>!
+            </h2>
             <button className={styles.shareButton} onClick={handleShare}>
               Поделиться в X
             </button>
