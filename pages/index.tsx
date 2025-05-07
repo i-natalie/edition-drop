@@ -24,8 +24,8 @@ const Home: NextPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [mintedNFT, setMintedNFT] = useState(null);
 
-  // Обработчик минтинга
-  const handleMint = async (tokenId, quantity) => {
+  // Обработчик минтинга с типами
+  const handleMint = async (tokenId: string, quantity: number) => {
     if (!contract) return;
     try {
       await contract.erc1155.claim(tokenId, quantity);
@@ -101,7 +101,7 @@ const Home: NextPage = () => {
               ×
             </span>
             <h2>
-              Успешно заминтили NFT <span>&quot;{mintedNFT.metadata.name}&quot;</span>!
+              Успешно заминтили NFT <span>"{mintedNFT.metadata.name}"</span>!
             </h2>
             <button className={styles.shareButton} onClick={handleShare}>
               Поделиться в X
