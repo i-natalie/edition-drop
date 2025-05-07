@@ -1,8 +1,6 @@
 // pages/index.tsx
 import {
   MediaRenderer,
-  Web3Button,
-  useAddress,
   useContract,
   useContractMetadata,
   useNFT,
@@ -15,7 +13,6 @@ import { useState } from "react";
 const myEditionDropContractAddress = "0x8Dc21067Fefed800e844b2951A3f4DbD54c84037";
 
 const Home: NextPage = () => {
-  const address = useAddress();
   const { contract } = useContract(myEditionDropContractAddress, "edition-drop");
   const { data: contractMetadata } = useContractMetadata(contract);
 
@@ -24,8 +21,30 @@ const Home: NextPage = () => {
 
   const [quantity0, setQuantity0] = useState(1);
   const [quantity1, setQuantity1] = useState(1);
-  const [minted0, setMinted0] = useState(false); // Состояние для NFT 0
-  const [minted1, setMinted1] = useState(false); // Состояние для NFT 1
+  const [modalOpen, setModalOpen] = useState(false);
+  const [mintedNFT, setMintedNFT] = useState(null);
+
+  // Обработчик минтинга
+  const handleMint = async (tokenId, quantity) => {
+    if (!contract) return;
+    try {
+      await contract.erc1155.claim(tokenId, quantity);
+      const nft = tokenId === "0" ? nft0 : nft1;
+      setMintedNFT(nft);
+      setModalOpen(true);
+    } catch (err) {
+      console.error(err);
+      alert("Ошибка при минтинге");
+    }
+  };
+
+  // Обработчик кнопки "Поделиться в X"
+  const handleShare = () => {
+    if (!mintedNFT) return;
+    const text = encodeURIComponent(`Я только что заминтил NFT "${mintedNFT.metadata.name}"! Посмотри:`);
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
+  };
 
   return (
     <div className={styles.container}>
@@ -45,7 +64,6 @@ const Home: NextPage = () => {
             <MediaRenderer src={nft0.metadata.image} width="100%" height="auto" />
             <h3>{nft0.metadata.name}</h3>
             <p>{nft0.metadata.description}</p>
-
             <input
               type="number"
               value={quantity0}
@@ -53,35 +71,7 @@ const Home: NextPage = () => {
               onChange={(e) => setQuantity0(Number(e.target.value))}
               className={styles.input}
             />
-
-            <button
-              onClick={async () => {
-                if (!contract) return;
-                try {
-                  await contract.erc1155.claim("0", quantity0);
-                  setMinted0(true); // Устанавливаем, что NFT 0 заминчен
-                  alert("Успешно заминтили NFT 0!");
-                } catch (err) {
-                  console.error(err);
-                  alert("Ошибка при минтинге");
-                }
-              }}
-            >
-              Mint NFT 0
-            </button>
-
-            {minted0 && (
-              <button
-                className={styles.shareButton}
-                onClick={() => {
-                  const text = encodeURIComponent(`Я только что заминтил NFT "${nft0.metadata.name}"! Посмотри:`);
-                  const url = encodeURIComponent(window.location.href);
-                  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
-                }}
-              >
-                Поделиться в X
-              </button>
-            )}
+            <button onClick={() => handleMint("0", quantity0)}>Mint NFT 0</button>
           </div>
         )}
 
@@ -91,7 +81,6 @@ const Home: NextPage = () => {
             <MediaRenderer src={nft1.metadata.image} width="100%" height="auto" />
             <h3>{nft1.metadata.name}</h3>
             <p>{nft1.metadata.description}</p>
-
             <input
               type="number"
               value={quantity1}
@@ -99,38 +88,25 @@ const Home: NextPage = () => {
               onChange={(e) => setQuantity1(Number(e.target.value))}
               className={styles.input}
             />
-
-            <button
-              onClick={async () => {
-                if (!contract) return;
-                try {
-                  await contract.erc1155.claim("1", quantity1);
-                  setMinted1(true); // Устанавливаем, что NFT 1 заминчен
-                  alert("Успешно заминтили NFT 1!");
-                } catch (err) {
-                  console.error(err);
-                  alert("Ошибка при минтинге NFT 1");
-                }
-              }}
-            >
-              Mint NFT 1
-            </button>
-
-            {minted1 && (
-              <button
-                className={styles.shareButton}
-                onClick={() => {
-                  const text = encodeURIComponent(`Я только что заминтил NFT "${nft1.metadata.name}"! Посмотри:`);
-                  const url = encodeURIComponent(window.location.href);
-                  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank");
-                }}
-              >
-                Поделиться в X
-              </button>
-            )}
+            <button onClick={() => handleMint("1", quantity1)}>Mint NFT 1</button>
           </div>
         )}
       </div>
+
+      {/* Модальное окно */}
+      {modalOpen && mintedNFT && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <span className={styles.close} onClick={() => setModalOpen(false)}>
+              &times;
+            </span>
+            <h2>Успешно заминтили NFT "{mintedNFT.metadata.name}"!</h2>
+            <button className={styles.shareButton} onClick={handleShare}>
+              Поделиться в X
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
